@@ -1,42 +1,52 @@
-export const likeCard = (likeButton) => {
-  likeButton.classList.toggle("card__like-button_is-active");
-};
-
-export const deleteCard = (cardElement) => {
-  cardElement.remove();
-};
-
-const getTemplate = () => {
-  return document
-    .getElementById("card-template")
-    .content.querySelector(".card")
-    .cloneNode(true);
-};
-
 export const createCardElement = (
-  data,
+  cardData,
+  userId,
   { onPreviewPicture, onLikeIcon, onDeleteCard }
 ) => {
-  const cardElement = getTemplate();
-  const likeButton = cardElement.querySelector(".card__like-button");
-  const deleteButton = cardElement.querySelector(".card__control-button_type_delete");
-  const cardImage = cardElement.querySelector(".card__image");
-
-  cardImage.src = data.link;
-  cardImage.alt = data.name;
-  cardElement.querySelector(".card__title").textContent = data.name;
-
-  if (onLikeIcon) {
-    likeButton.addEventListener("click", () => onLikeIcon(likeButton));
+  const template = document.querySelector('#card-template').content;
+  const cardElement = template.querySelector('.card').cloneNode(true);
+  
+  const cardImage = cardElement.querySelector('.card__image');
+  const cardTitle = cardElement.querySelector('.card__title');
+  const likeButton = cardElement.querySelector('.card__like-button');
+  const deleteButton = cardElement.querySelector('.card__control-button_type_delete');
+  const likeCountElement = cardElement.querySelector('.card__like-count');
+  
+  cardImage.src = cardData.link;
+  cardImage.alt = cardData.name;
+  cardTitle.textContent = cardData.name;
+  
+  const isOwner = cardData.owner._id === userId;
+  
+  if (!isOwner) {
+    deleteButton.style.display = 'none';
   }
-
-  if (onDeleteCard) {
-    deleteButton.addEventListener("click", () => onDeleteCard(cardElement));
+  
+  const isLiked = cardData.likes.some(like => like._id === userId);
+  
+  if (isLiked) {
+    likeButton.classList.add('card__like-button_is-active');
   }
-
-  if (onPreviewPicture) {
-    cardImage.addEventListener("click", () => onPreviewPicture({name: data.name, link: data.link}));
+  
+  if (likeCountElement) {
+    likeCountElement.textContent = cardData.likes.length;
   }
-
+  
+  likeButton.addEventListener('click', () => {
+    const currentIsLiked = likeButton.classList.contains('card__like-button_is-active');
+    
+    onLikeIcon(cardData._id, currentIsLiked, likeButton, likeCountElement);
+  });
+  
+  if (isOwner) {
+    deleteButton.addEventListener('click', () => {
+      onDeleteCard(cardData._id, cardElement);
+    });
+  }
+  
+  cardImage.addEventListener('click', () => {
+    onPreviewPicture();
+  });
+  
   return cardElement;
 };
