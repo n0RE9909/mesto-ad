@@ -108,11 +108,42 @@
                 <h2 class="card__title"></h2>
                 <div class="card__likes">
                     <button type="button" class="card__like-button" aria-label="Поставить лайк"></button>
+                    <span class="card__like-count">0</span>
                 </div>
             </div>
         </li>
     </template>
 
+    <div class="popup popup_type_info">
+        <div class="popup__content popup__content_content_info">
+          <button type="button" class="popup__close"></button>
+          <h3 class="popup__title">Статистика карточек</h3>
+          <dl class="popup__info"></dl>
+          <h4 class="popup__text">Топ пользователей</h4>
+          <ul class="popup__list"></ul>
+        </div>
+    </div>
+
     <script src="./src/scripts/index.js" type="module"></script>
+      <template id="popup-info-definition-template">
+      <div class="popup__info-item">
+        <dt class="popup__info-term"></dt>
+        <dd class="popup__info-description"></dd>
+      </div>
+    </template>
+
+    <template id="popup-info-user-preview-template">
+      <li class="popup__list-item popup__list-item_type_badge">
+        <div class="popup__user-avatar"></div>
+        <div class="popup__user-info">
+          <h5 class="popup__user-name"></h5>
+          <div class="popup__user-stats">
+            <span class="popup__user-stat">Карточек: <span class="popup__user-stat-value cards-count">0</span></span>
+            <span class="popup__user-stat">Лайков получил: <span class="popup__user-stat-value received-likes">0</span></span>
+            <span class="popup__user-stat">Лайков поставил: <span class="popup__user-stat-value given-likes">0</span></span>
+          </div>
+        </div>
+      </li>
+    </template>
 </body>
 </html>
